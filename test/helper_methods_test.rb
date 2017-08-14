@@ -13,6 +13,8 @@ include MathTool
 Dir.chdir(File.dirname(__FILE__))
 
 class HelperMethodsTest < Minitest::Test
+
+ ARRAY = %w(albatross dog horse)
  def test_hex_color
     col_double = 0.5
     hexcolor = 0xFFCC6600
@@ -27,6 +29,13 @@ class HelperMethodsTest < Minitest::Test
     assert_raises(StandardError, 'Dodgy Color Conversion') do
       hex_color([])
     end
+  end
+
+  def test_p52ruby
+    p5array = [16777215, 16711680, 255]
+    ruby_string = "%w(#FFFFFF #FF0000 #0000FF)\n"
+    result = p52ruby(p5array)
+    assert_equal(result, ruby_string)
   end
 
   def test_dist
@@ -46,5 +55,13 @@ class HelperMethodsTest < Minitest::Test
     assert_in_epsilon(dist(ax, ay, bx, by, cx, cy), 0.0)
     ax, ay, bx, by, cx, cy = 0, 0, 1.0, 0.0, 0, 0
     assert_in_epsilon(dist(ax, ay, bx, by, cx, cy), 1.0, epsilon = 0.0001, msg = 'when x and z dimension are zero')
+  end
+
+  def test_min
+    assert_equal(min(*ARRAY), 'albatross')
+  end
+
+  def test_max
+    assert_equal(max(*ARRAY), 'horse')
   end
 end

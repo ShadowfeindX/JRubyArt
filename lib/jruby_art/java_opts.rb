@@ -3,13 +3,12 @@
 class JavaOpts
   attr_reader :opts
 
-  def initialize(sketch_root)
-    arg_file = File.join(sketch_root, 'data/java_args.txt')
+  def initialize
+    arg_file = File.join(SKETCH_ROOT, 'data/java_args.txt')
     @opts = []
     @opts += File.read(arg_file).split(/\s+/) if FileTest.exist?(arg_file)
-    if opts.empty? && Processing::RP_CONFIG.fetch('java_args', false)
-      @opts += Processing::RP_CONFIG['java_args'].split(/\s+/)
-    end
+    return unless opts.empty? && Processing::RP_CONFIG.fetch('java_args', false)
+    @opts += Processing::RP_CONFIG['java_args'].split(/\s+/)
   end
 end
 

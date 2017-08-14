@@ -37,13 +37,8 @@ module Processing
 
     # A nice method to run a given block for a grid.
     # Lifted from action_coding/Nodebox.
-    def grid(cols, rows, col_size = 1, row_size = 1)
-      (0...cols * rows).map do |i|
-        x = col_size * (i % cols)
-        y = row_size * i.div(cols)
-        yield x, y
-      end
-    end
+    # def grid(cols, rows, col_size = 1, row_size = 1) { |x, y| block_stuff }
+    # NB: now implemented in java
 
     # lerp_color takes three or four arguments, in Java that's two
     # different methods, one regular and one static, so:
@@ -65,8 +60,13 @@ module Processing
       Java::Monkstone::ColorUtil.webArray(web)
     end
 
-    def int_to_ruby_colors(hex)
-      Java::Monkstone::ColorUtil.rubyString(hex)
+    def int_to_ruby_colors(p5color)
+      warn "[DEPRECATION] `int_to_ruby_colors` is deprecated.  Please use `p52ruby` instead."
+      p52ruby(p5color)
+    end
+
+    def p52ruby(p5color)
+      Java::Monkstone::ColorUtil.rubyString(p5color)
     end
 
     # Overrides Processing convenience function thread, which takes a String
@@ -81,16 +81,19 @@ module Processing
 
     # explicitly provide 'processing.org' min instance method
     # to return a float:- a, b and c need to be floats
+    # you might choose to use ruby method directly and then
+    # provide a block to alter comparator eg
+    # args.min(&block) # { |a, b| a.value <=> b.value }
 
     def min(*args)
-      args.min # { |a,b| a <=> b } optional block not reqd
+      args.min
     end
 
     # explicitly provide 'processing.org' max instance method
-    # to return a float:- a, b and c need to be floats
+    # to return a float:- a, b and c need to be floats see above
 
     def max(*args)
-      args.max # { |a, b| a <=> b } optional block not reqd
+      args.max
     end
 
     # explicitly provide 'processing.org' dist instance method
@@ -181,7 +184,7 @@ module Processing
 
     private
 
-    FIXNUM_COL = -> (x) { x.is_a?(Integer) } 
+    FIXNUM_COL = -> (x) { x.is_a?(Integer) }
     STRING_COL = -> (x) { x.is_a?(String) }
     FLOAT_COL = -> (x) { x.is_a?(Float) }
     # parse single argument color int/double/String
