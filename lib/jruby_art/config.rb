@@ -5,10 +5,10 @@ require 'yaml'
 # The wrapper module
 module Processing
   unless defined? RP_CONFIG
-    config_path = '~/.jruby_art/config.yml'
+    config_path = "#{ENV['HOME']}/.jruby_art/config.yml"
     begin
       CONFIG_FILE_PATH = File.expand_path(config_path)
-      RP_CONFIG = YAML.load_file(CONFIG_FILE_PATH)
+      RP_CONFIG = YAML.safe_load(File.read(CONFIG_FILE_PATH))
     rescue
       warn(format('WARN: you need to set PROCESSING_ROOT in %s', config_path))
     end
@@ -40,15 +40,4 @@ module Processing
   end
 
   OS ||= HostOS.os
-end
-
-# This class encapulates knowledge of processing sketchbook structure
-class Sketchbook
-  def self.path
-    File.join(Processing::RP_CONFIG['sketchbook_path'], 'libraries')
-  end
-
-  def self.library(name)
-    Dir["#{path}/#{name}/library/\*.jar"]
-  end
 end
