@@ -33,8 +33,8 @@ module Processing
       when /linux/ then :linux
       when /solaris|bsd/ then :unix
       else
-        WIN_PATTERNS.find { |reg| reg.match?(detect_os) }
-        raise "unsupported os: #{detect_os.inspect}" if Regexp.last_match.nil?
+        windows = WIN_PATTERNS.detect(false) { |reg| reg.match?(detect_os) }
+        raise "unsupported os: #{detect_os.inspect}" unless windows
         :windows
       end
     end
